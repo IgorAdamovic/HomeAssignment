@@ -29,19 +29,29 @@ Flight information – this part will show an extra information of the flight
    • Destination gate
    
 Clicking on worker name, will show all his flights in the table.
+
 Clicking on specific flight, will show the flight details in Flight Information.
+
 The flight information should be refreshed automatically every 1 minute.
+
 The first row is default selected row of the table.
+
 The duration should be displayed in prettier format. 
+
 Example: 350 (response from API in minutes) → 5h 50m
 
 ## Endpoints
+
 You have access to endpoints:
+
 • List of workers: https://interview-mock.herokuapp.com/api/workers/
+
 • Flights of the worker: https://interview-mock.herokuapp.com/api/workers/:worker_id
 
 ## Client implementation
+
 You can use any third-party library if you wish.
+
 It should work at least on Chrome browser.
 
 ## Project setup
