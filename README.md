@@ -15,10 +15,10 @@ Columns of the table are:
    • Destination Date
    
 Flight information – this part will show an extra information of the flight
-   • Plane Number  
-   • Duration of the flight 
-   • Origin gate 
-   • Destination gate
+   • Plane Number.    
+   • Duration of the flight  
+   • Origin gate  
+   • Destination gate 
    
 Clicking on worker name, will show all his flights in the table.
 
