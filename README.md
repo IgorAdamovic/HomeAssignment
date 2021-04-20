@@ -6,15 +6,14 @@ Workers list – a list of all workers in the system.
 
 Flights of the worker – a table with all flight information of the worker.
 
-Columns of the table are: 
-
+Columns of the table are:   
    • Flight Number   
    • Origin   
    • Origin Date   
    • Destination 
    • Destination Date
    
-Flight information – this part will show an extra information of the flight
+Flight information – this part will show an extra information of the flight: 
    • Plane Number.    
    • Duration of the flight  
    • Origin gate  
