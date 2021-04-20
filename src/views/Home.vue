@@ -26,6 +26,7 @@
             bordered
             selectable
             @row-selected="onFlightSelected"
+            :tbody-tr-class="rowFlightClass"
           ></b-table>
         </b-col>
         <b-col lg="4">
@@ -94,6 +95,7 @@ export default {
           origin_date: "",
           destination: "",
           destination_date: "",
+          status: "",
         },
       ],
       flight_information: [
@@ -106,7 +108,6 @@ export default {
       ],
       worker_list: [],
       flights_list: [],
-      flight_info: [],
       worker_id: null,
       flight_number: null,
     };
@@ -128,9 +129,13 @@ export default {
               status: worker.status,
             });
           });
-          this.worker_id = this.workers[0].id;
+          return this.workers;
+        })
+        .then((workers) => {
+          this.worker_id = workers[0].id;
           this.workers[0].status = "active";
           this.getFlightsOfWorker();
+          this.refreshedFlightInfo();
         });
     },
     getFlightsOfWorker() {
@@ -148,29 +153,57 @@ export default {
               origin_date: flight.from_date,
               destination: flight.to,
               destination_date: flight.to_date,
+              status: "",
             });
           });
+          this.flights_of_the_worker[0].status = "active";
+          this.flight_number = this.flights_of_the_worker[0].flight_number;
+          this.flight_information = [
+            {
+              plane_number: this.flights_list[0].plane,
+              duration: this.parseTime(this.flights_list[0].duration),
+              origin_date: this.flights_list[0].from_date,
+              destination_gate: this.flights_list[0].to_gate,
+            },
+          ];
         });
     },
     getFlightInformation() {
       this.flight_information = [];
-      axios
-        .get(
-          "https://interview-mock.herokuapp.com/api/workers/" + this.worker_id
-        )
-        .then((response) => {
-          this.flight_info = response.data;
-          this.flight_info.forEach((info) => {
-            if (info.num === this.flight_number) {
-              this.flight_information.push({
-                plane_number: info.plane,
-                duration: this.parseDate(info.duration),
-                origin_date: info.from_date,
-                destination_gate: info.to_gate,
-              });
-            }
-          });
-        });
+      let flight_info = this.flights_list.find(
+        (flight) => flight.num === this.flight_number
+      );
+      this.flight_information[0] = {
+        plane_number: flight_info.plane,
+        duration: this.parseTime(flight_info.duration),
+        origin_date: flight_info.from_date,
+        destination_gate: flight_info.to_gate,
+      };
+    },
+    refreshedFlightInfo() {
+      this.interval = setInterval(
+        function () {
+          axios
+            .get(
+              "https://interview-mock.herokuapp.com/api/workers/" +
+                this.worker_id
+            )
+            .then((response) => {
+              let flights = response.data;
+              this.flight_information = [];
+              let flight_info = flights.find(
+                (flight) => flight.num === this.flight_number
+              );
+              this.flight_information[0] = {
+                plane_number: flight_info.plane,
+                duration: this.parseTime(flight_info.duration),
+                origin_date: flight_info.from_date,
+                destination_gate: flight_info.to_gate,
+              };
+            });
+        }.bind(this),
+        60000
+      );
     },
     onWorkerSelected(items) {
       if (items.length) {
@@ -195,14 +228,22 @@ export default {
       if (!item || type !== "row") return;
       if (item.status === "active") return "table-success";
     },
+    rowFlightClass(item, type) {
+      if (!item || type !== "row") return;
+      if (item.status === "active") return "table-success";
+    },
     onFlightSelected(items) {
       if (items.length) {
         this.flight_number = items[0].flight_number;
         this.getFlightInformation();
+        this.flights_of_the_worker.forEach((flight) => {
+          flight.status = "";
+        });
+        items[0].status = "active";
         this.$refs.flightsTable.clearSelected();
       }
     },
-    parseDate(time) {
+    parseTime(time) {
       let hours = Math.floor(time / 60);
       let minutes = time % 60;
       var newTime;
@@ -212,13 +253,6 @@ export default {
         newTime = hours + "h " + minutes + "m";
       }
       return newTime;
-    },
-  },
-  watch: {
-    flight_number: function () {
-      this.interval = setInterval(function () {
-        this.getFlightInformation();
-      }.bind(this), 60000);
     },
   },
 };
