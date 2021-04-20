@@ -13,7 +13,7 @@ Columns of the table are:
    • Destination 
    • Destination Date
    
-Flight information – this part will show an extra information of the flight: 
+Flight information – this part will show an extra information of the flight:    
    • Plane Number.    
    • Duration of the flight  
    • Origin gate  
