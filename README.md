@@ -1,5 +1,9 @@
 # HomeAssignment
 
+An Interview Test Project
+
+### The Problem
+
 The app should contain 3 parts: 
 
 Workers list – a list of all workers in the system.
@@ -31,7 +35,7 @@ The duration should be displayed in prettier format.
 
 Example: 350 (response from API in minutes) → 5h 50m
 
-## Endpoints
+### Endpoints
 
 You have access to endpoints:
 
@@ -39,7 +43,7 @@ You have access to endpoints:
 
 • Flights of the worker: https://interview-mock.herokuapp.com/api/workers/:worker_id
 
-## Client implementation
+### Client implementation
 
 You can use any third-party library if you wish.
 
