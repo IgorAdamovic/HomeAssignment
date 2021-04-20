@@ -2,6 +2,10 @@
 
 An Interview Test Project
 
+## About the project
+
+This project is made as a part of the interview process for the <a href="https://www.quest.com/">30hills</a>
+
 ### The Problem
 
 The app should contain 3 parts: 
