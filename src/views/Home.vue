@@ -47,6 +47,7 @@ export default {
   name: "Home",
   data() {
     return {
+      request: null,
       workerFields: [
         {
           key: "name",
@@ -112,10 +113,17 @@ export default {
       flight_number: null,
     };
   },
-  mounted: function () {
+  mounted: function() {
     this.getAllWorkers();
   },
   methods: {
+    cancel() {
+      this.request.cancel();
+      this.clearOldRequest();
+    },
+    clearOldRequest() {
+      this.request = null;
+    },
     getAllWorkers() {
       this.workers = [];
       axios
@@ -139,10 +147,18 @@ export default {
         });
     },
     getFlightsOfWorker() {
+      if (this.request) {
+        this.cancel();
+      }
+      const axiosSource = axios.CancelToken.source();
+      this.request = { cancel: axiosSource.cancel };
       this.flights_of_the_worker = [];
       axios
         .get(
-          "https://interview-mock.herokuapp.com/api/workers/" + this.worker_id
+          "https://interview-mock.herokuapp.com/api/workers/" + this.worker_id,
+          {
+            cancelToken: axiosSource.token,
+          }
         )
         .then((response) => {
           this.flights_list = response.data;
@@ -166,6 +182,12 @@ export default {
               destination_gate: this.flights_list[0].to_gate,
             },
           ];
+          this.clearOldRequest();
+        })
+        .catch((error) => {
+          if (axios.isCancel(error)) {
+            console.log("Request canceled", error.message);
+          }
         });
     },
     getFlightInformation() {
@@ -182,7 +204,7 @@ export default {
     },
     refreshedFlightInfo() {
       this.interval = setInterval(
-        function () {
+        function() {
           axios
             .get(
               "https://interview-mock.herokuapp.com/api/workers/" +
